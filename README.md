@@ -53,6 +53,9 @@ Otherwise, you just need to use the default options.
         DATA.CENTER_CROP: whether to center crop the input images.
                           This flag and DATA.FULL_RES_OUTPUT flag can not be both set to True
     ```
+3. if everything goes well, you will get the results like demonstrated in [visual_results.md](visual_results_in_the_wild.md).
+
+
 ### Test images from ImageNet val set
 * The most worry-free way is to make sure the images' names are **consistent** with the official ImageNet name.
 Because we provide the GT ImageNet labels in [imagenet_val_label_map.txt](assets/imagenet_val_label_map.txt).
