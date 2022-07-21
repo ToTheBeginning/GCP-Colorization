@@ -29,7 +29,7 @@ Otherwise, you just need to use the default options.
 
 ## Inference
 ### Test in the wild images
-1. predict ImageNet label (0-999) for these images
+1. Predict ImageNet label (0-999) for these images
    1. install awesome timm, `pip install timm`
    2. use a SOTA classification model from timm to predict the labels
       ```shell
@@ -38,7 +38,7 @@ Otherwise, you just need to use the default options.
       here `testcase_in_the_wild` folder has the images you want to test
    3. you will get the label map in `assets/predicted_label_for_user_image.txt`
 
-2. inference colorization
+2. Inference colorization
     ```shell
     python main.py --expname inference_in_the_wild --test_folder testcase_in_the_wild DATA.FULL_RES_OUTPUT True
     ```
@@ -53,7 +53,7 @@ Otherwise, you just need to use the default options.
         DATA.CENTER_CROP: whether to center crop the input images.
                           This flag and DATA.FULL_RES_OUTPUT flag can not be both set to True
     ```
-3. if everything goes well, you will get the results like demonstrated in [visual_results.md](visual_results_in_the_wild.md).
+3. If everything goes well, you will get the results similar as [visual_results.md](visual_results_in_the_wild.md).
 
 
 ### Test images from ImageNet val set
