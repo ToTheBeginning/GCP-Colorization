@@ -64,7 +64,7 @@ You can check `testcase_imagenet` for examples.
 prepare the grayscale images following the pipeline and hack the related code.
 * Inference
     ```shell
-    python main.py --expname inference_imagenet --test_folder testcase_imagenet
+    python main.py --expname inference_imagenet --test_folder testcase_imagenet DATA.FULL_RES_OUTPUT False DATA.CENTER_CROP False
     ```
 * If everything goes well, you will get the following quantitative results on the full 50,000 ImageNet validation images (yes, FID is better than the number reported in our ICCV 2021 paper)
 
