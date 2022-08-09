@@ -5,8 +5,15 @@ from torch.autograd import Function
 from torch.autograd.function import once_differentiable
 from torch.nn import functional as F
 from torch.nn.modules.utils import _pair, _single
+from distutils.version import LooseVersion
+import torchvision
 
-from . import deform_conv_ext
+try:
+    from . import deform_conv_ext
+except ImportError:
+    print('Cannot import deform_conv_ext. You can ignore this message if you are using torchvision >= 0.9.0.\n'
+          'Otherwise you may need to check whether the DCN has been successfully installed.')
+    pass
 
 
 class DeformConvFunction(Function):
@@ -379,5 +386,9 @@ class DCNv2Pack(ModulatedDeformConvPack):
         offset = torch.cat((o1, o2), dim=1)
         mask = torch.sigmoid(mask)
 
-        return modulated_deform_conv(x, offset, mask, self.weight, self.bias, self.stride, self.padding, self.dilation,
+        if LooseVersion(torchvision.__version__) >= LooseVersion('0.9.0'):
+            return torchvision.ops.deform_conv2d(x, offset, self.weight, self.bias, self.stride, self.padding,
+                                                 self.dilation, mask)
+        else:
+            return modulated_deform_conv(x, offset, mask, self.weight, self.bias, self.stride, self.padding, self.dilation,
                                      self.groups, self.deformable_groups)

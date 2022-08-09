@@ -1,22 +1,29 @@
 # GCP-Colorization (ICCV 2021)
-Official code for ICCV 2021 paper "Towards Vivid and Diverse Image Colorization with Generative Color Prior".
 
-The name of our method, **GCP-Colorization**, is short for **Colorization** with **G**enerative **C**olor **P**rior.
+--- 
+### Towards Vivid and Diverse Image Colorization with Generative Color Prior
 
+> [Paper](https://arxiv.org/abs/2108.08826)<br>
+> [Yanze Wu](https://github.com/ToTheBeginning), [Xintao Wang](https://xinntao.github.io/), [Yu Li](https://yu-li.github.io/), [Honglun Zhang](https://scholar.google.com/citations?hl=en&user=KjQLROoAAAAJ), [Xun Zhao](https://scholar.google.com.hk/citations?user=KF-uZFYAAAAJ&hl=en), [Ying Shan](https://scholar.google.com/citations?user=4oXBp9UAAAAJ&hl=en)<br>
+> [ARC Lab, Tencent PCG](https://arc.tencent.com/en/index)
 
 <p align="center">
-  <img src="assets/teaser.png">
+  <img src="assets/teaser.png" width="800px">
 </p>
+
+---
 
 ## Installation
 ### Core dependencies
-* CUDA >= 10.0 (test on 10.0 and 10.2)
+* CUDA >= 10.0 (test on 10.0, 10.2, and 11.1)
 * gcc >= 7.3
-* pytorch >= 1.6 (test on 1.6 and 1.7.1)
+* pytorch >= 1.6 (test on 1.6, 1.7.1, and 1.9.0)
 * python3 (test on 3.8)
+* yacs
 
-### Install DCN package
+### Install DCN package (only required by torchvision < 0.9.0)
 ```shell
+# you can skip this step if you are using torchvision >= 0.9.0
 cd ops
 python setup.py develop
 ```
@@ -25,7 +32,7 @@ python setup.py develop
 
 Download the pretrained models from [[Google Drive](https://drive.google.com/drive/folders/1-mwYyvF4nGbqI3x1dC-OruX0tru02JKE?usp=sharing) ] and put them into the `assets` folder.
 If you want to reproduce or get the results reported in our ICCV 2021 paper for academic purpose, you can check [model zoo](model_zoo.md).
-Otherwise, you just need to use the default options.
+Otherwise, you just need to use the default options, which is our best model.
 
 ## Inference
 ### Test in the wild images
@@ -75,7 +82,7 @@ prepare the grayscale images following the pipeline and hack the related code.
 
 ### TODO
 - [ ] add colab demo (PR welcomed)
-- [ ] replace current DCN with compiling-free torchvision version `torchvision.ops.deform_conv2d` (PR welcomed)
+- [x] replace current DCN with compiling-free torchvision version `torchvision.ops.deform_conv2d` (PR welcomed)
 
 ## Citation
 If you find this project useful for your research, please consider citing our paper:
