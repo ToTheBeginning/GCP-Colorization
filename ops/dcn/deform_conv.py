@@ -1,12 +1,12 @@
 import math
 import torch
+import torchvision
+from distutils.version import LooseVersion
 from torch import nn as nn
 from torch.autograd import Function
 from torch.autograd.function import once_differentiable
 from torch.nn import functional as F
 from torch.nn.modules.utils import _pair, _single
-from distutils.version import LooseVersion
-import torchvision
 
 try:
     from . import deform_conv_ext
@@ -390,5 +390,5 @@ class DCNv2Pack(ModulatedDeformConvPack):
             return torchvision.ops.deform_conv2d(x, offset, self.weight, self.bias, self.stride, self.padding,
                                                  self.dilation, mask)
         else:
-            return modulated_deform_conv(x, offset, mask, self.weight, self.bias, self.stride, self.padding, self.dilation,
-                                     self.groups, self.deformable_groups)
+            return modulated_deform_conv(x, offset, mask, self.weight, self.bias, self.stride, self.padding,
+                                         self.dilation, self.groups, self.deformable_groups)

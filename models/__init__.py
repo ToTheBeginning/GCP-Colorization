@@ -1,2 +1,2 @@
 # flake8: noqa
-from . import biggan, ref_based_model
+from . import biggan, latent_deformator, ref_based_model

@@ -50,6 +50,11 @@ class REFCOLORSolver(BaseSolver):
         self.load_biggan()
         self.model = models.ref_based_model.RefBasedModel(self.net_corr, self.net_gen, None, None, self.biggan_dis,
                                                           self.biggan_enc, self.biggan_gen, self.cfg)
+        if self.cfg.DIVERSE.DIRECTION >= 0:
+            self.deformator = models.latent_deformator.LatentDeformator(
+                shift_dim=119, type=models.latent_deformator.DeformatorType.ORTHO)
+            self.deformator.load_state_dict(torch.load(self.cfg.DIVERSE.CKP, map_location='cpu'))
+            self.deformator.to(self.device).eval()
         # print('net_corr: ', sum(map(lambda x: x.numel(), self.net_corr.parameters())))
         # print('net_gen: ', sum(map(lambda x: x.numel(), self.net_gen.parameters())))
         # print('biggan_dis: ', sum(map(lambda x: x.numel(), self.biggan_dis.parameters())))
@@ -69,11 +74,33 @@ class REFCOLORSolver(BaseSolver):
                 self.read_data_from_dataiter(data_iter)
             except StopIteration:
                 break
-            self.validate('test_bs{}'.format(bs_idx))
+            if self.cfg.DIVERSE.DIRECTION > -2:
+                if hasattr(self, 'deformator'):
+                    # diverse colorization by walking through the interpretable latent space
+                    for div_idx, shift in enumerate(
+                            np.arange(-self.cfg.DIVERSE.SHIFT_RANGE, self.cfg.DIVERSE.SHIFT_RANGE + 1e-9,
+                                      self.cfg.DIVERSE.SHIFT_RANGE / self.cfg.DIVERSE.SHIFT_COUNT)):
+                        div_info = f'_direction{self.cfg.DIVERSE.DIRECTION}num{div_idx}'
+                        ohv = torch.zeros(119).to(self.device)
+                        ohv[self.cfg.DIVERSE.DIRECTION] = shift
+                        latent_shift = self.deformator(ohv)
+                        pad = torch.zeros(latent_shift.size(0), 1).to(self.device)
+                        latent_shift = torch.cat((latent_shift, pad), dim=1)
+                        self.sample_data['shift'] = latent_shift
+                        self.validate('test_bs{}'.format(bs_idx), div_info)
+                else:
+                    # diverse colorization by adding noise to the latent code
+                    for div_idx in range(2 * self.cfg.DIVERSE.SHIFT_COUNT + 1):
+                        div_info = f'_randdirectionnum{div_idx}'
+                        latent_shift = torch.randn(1, 120, device=self.device)
+                        self.sample_data['shift'] = latent_shift
+                        self.validate('test_bs{}'.format(bs_idx), div_info)
+            else:
+                self.validate('test_bs{}'.format(bs_idx))
             bs_idx += 1
 
     @torch.no_grad()
-    def validate(self, info):
+    def validate(self, info, div_info=''):
         self.net_gen.eval()
         self.net_corr.eval()
 
@@ -117,16 +144,16 @@ class REFCOLORSolver(BaseSolver):
                 dim=3,
             ).data.cpu()
 
-        self.save_single_images(images, ('gray', 'ref', 'warp', 'fake', 'gt'))
+        self.save_single_images(images, ('gray', 'ref', 'warp', 'fake', 'gt'), div_info)
         if self.cfg.DATA.FULL_RES_OUTPUT:
-            self.save_single_images(out['fake_rgb_full_res'], ('full_resolution_results', ))
+            self.save_single_images(out['fake_rgb_full_res'], ('full_resolution_results', ), div_info)
 
         try:
             save_image(
                 images,
                 os.path.join(
                     self.cfg.TEST.LOG_DIR,
-                    'out_{}.png'.format(info),
+                    'out_{}{}.png'.format(info, div_info),
                 ),
                 normalize=True,
                 nrow=1,
@@ -137,7 +164,7 @@ class REFCOLORSolver(BaseSolver):
         self.net_gen.train()
         self.net_corr.train()
 
-    def save_single_images(self, images, name_list):
+    def save_single_images(self, images, name_list, div_info=''):
 
         n, _, _, w = images.size()
         assert w % len(name_list) == 0
@@ -154,7 +181,7 @@ class REFCOLORSolver(BaseSolver):
                 img_name = self.sample_data['image_name'][j]
                 save_image(
                     sub_images[j],
-                    os.path.join(p, f'{img_name}.png'),
+                    os.path.join(p, f'{img_name}{div_info}.png'),
                     normalize=True,
                     nrow=1,
                 )

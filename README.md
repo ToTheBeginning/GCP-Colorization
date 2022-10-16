@@ -1,6 +1,6 @@
 # GCP-Colorization (ICCV 2021)
 
---- 
+---
 ### Towards Vivid and Diverse Image Colorization with Generative Color Prior
 
 > [Paper](https://arxiv.org/abs/2108.08826)<br>
@@ -80,9 +80,46 @@ prepare the grayscale images following the pipeline and hack the related code.
   | w/o center crop | 1.325 | 34.89 | 3.45 |
   | w/ center crop | 1.262 | 34.74 | 4.12 |
 
+
+### Diverse Colorization
+You can achieve **diverse colorization** by:
+1. **adding random noise to the latent code**
+   ```shell
+   python main.py --expname inference_random_diverse_color --latent_direction -1 --test_folder testcase_in_the_wild/testcase19_from_eccv2022_bigcolor.png DATA.FULL_RES_OUTPUT True
+   ```
+   | Input | Diverse colorization | Diverse colorization | Diverse colorization |
+   | :----: | :----: | :----: | :----: |
+   | <img src="testcase_in_the_wild/testcase19_from_eccv2022_bigcolor.png" width="224"> |<img src="https://user-images.githubusercontent.com/11482921/196039151-fca6d31a-63f2-4194-b2c0-827296ad090c.png" width="224"> | <img src="https://user-images.githubusercontent.com/11482921/196039209-68d0064a-52c5-4c83-8799-41dc68f50378.png" width="224"> | <img src="https://user-images.githubusercontent.com/11482921/196039232-e8726c4e-b9fa-4430-8c94-002d3d9f41f9.png" width="224"> |
+2. **walking through the interpretable latent space**
+
+   we use the method described in `Unsupervised Discovery of Interpretable Directions in the GAN Latent Space` to find the interpretable directions for BigGAN.
+   By setting `latent_direction` to the color-relevant direction (_e.g._, 4, 6, 23) we found, you can achieve more controllable diverse colorization.
+
+   ps: we also provide the checkpoint (i.e., the full direction matrix), so you can find more color-relevant directions by yourself.
+   ```shell
+   # get the label first
+   python predict_imagenet_label.py testcase_diverse --model beit_large_patch16_512 --pretrained
+   # the 1st direction we found
+   python main.py --expname inference_diverse_color_dir4 --latent_direction 4 --test_folder testcase_diverse/test_diverse_inp0.png
+   # the 2nd direction we found
+   python main.py --expname inference_diverse_color_dir6 --latent_direction 6 --test_folder testcase_diverse/test_diverse_inp1.png
+   python main.py --expname inference_diverse_color_dir6 --latent_direction 6 --test_folder testcase_diverse/test_diverse_inp2.png
+   # the 3rd direction we found
+   python main.py --expname inference_diverse_color_dir23 --latent_direction 23 --test_folder testcase_diverse/test_diverse_inp3.png
+   ```
+   | Input | Diverse colorization | Diverse colorization | Diverse colorization |
+   | :----: | :----: | :----: | :----: |
+   | <img src="testcase_diverse/test_diverse_inp0.png" width="224"> | <img src="https://user-images.githubusercontent.com/11482921/196039397-a4cb0a0e-0825-4e5e-ba9c-774db1c66962.png" width="224"> | <img src="https://user-images.githubusercontent.com/11482921/196039399-d325f26e-905b-4171-9355-b1cbfa2c2cc5.png" width="224"> | <img src="https://user-images.githubusercontent.com/11482921/196039402-727530b1-d445-4482-b53e-a3f71fb4a206.png" width="224"> |
+   | <img src="testcase_diverse/test_diverse_inp1.png" width="224"> | <img src="https://user-images.githubusercontent.com/11482921/196039508-d0d31afb-181c-4e82-867a-91da3175a626.png" width="224"> | <img src="https://user-images.githubusercontent.com/11482921/196039512-7e4fbc38-76ca-4639-9d93-7ba0d37ec129.png" width="224"> | <img src="https://user-images.githubusercontent.com/11482921/196039516-fd6ca5b5-efb3-4fed-bf46-20f8a17caa88.png" width="224"> |
+   | <img src="testcase_diverse/test_diverse_inp2.png" width="224"> | <img src="https://user-images.githubusercontent.com/11482921/196039603-ce380983-493b-467b-bdd0-13cbd67086d4.png" width="224"> | <img src="https://user-images.githubusercontent.com/11482921/196039605-6708f75e-1c1b-448c-83e4-9d94c3c10679.png" width="224"> | <img src="https://user-images.githubusercontent.com/11482921/196039607-f7d221ee-2041-4e43-b16c-b2673b8443d0.png" width="224"> |
+   | <img src="testcase_diverse/test_diverse_inp3.png" width="224"> | <img src="https://user-images.githubusercontent.com/11482921/196039652-210287ad-3cf8-46b2-ac0f-0d0415f4c749.png" width="224"> | <img src="https://user-images.githubusercontent.com/11482921/196039657-43ec1bbb-3584-4c14-b386-01029bedae5a.png" width="224"> | <img src="https://user-images.githubusercontent.com/11482921/196039658-b54adee0-2997-442e-a219-6abd34377852.png" width="224"> |
+3. **changing the category**
+
+   you can modify the `assets/predicted_label_for_user_image.txt`
+
+
 ### TODO
-- [ ] add colab demo (PR welcomed)
-- [x] replace current DCN with compiling-free torchvision version `torchvision.ops.deform_conv2d` (PR welcomed)
+- [ ] add colab demo
 
 ## Citation
 If you find this project useful for your research, please consider citing our paper:

@@ -87,7 +87,10 @@ class ImageNetInference(data.Dataset):
 
         inference_folder = cfg.DATA.INFERENCE_FOLDER
         # img_list = sorted(os.listdir(inference_folder))
-        img_list = sorted(scandir(inference_folder, recursive=True, full_path=True))
+        if osp.isfile(inference_folder):
+            img_list = [inference_folder]
+        else:
+            img_list = sorted(scandir(inference_folder, recursive=True, full_path=True))
         self.imgs = []
         for img_path in img_list:
             if not is_image_file(img_path):

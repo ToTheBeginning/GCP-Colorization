@@ -33,6 +33,11 @@ def parse_args():
         default=1,
     )
     parser.add_argument(
+        '--latent_direction',
+        type=int,
+        default=-2,
+    )
+    parser.add_argument(
         'opts',
         default=None,
         nargs=argparse.REMAINDER,
@@ -63,6 +68,7 @@ def load_config(args):
     timestr = time.strftime('%Y%m%d_%H%M%S', time.localtime())
     c.DATA.INFERENCE_FOLDER = args.test_folder
     c.DATA.BS = args.bs
+    c.DIVERSE.DIRECTION = args.latent_direction
 
     if c.MODE == 'test':
         c.TEST.LOG_DIR = 'results/{}_{}'.format(args.expname, timestr)

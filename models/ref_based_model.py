@@ -494,6 +494,8 @@ class RefBasedModel(nn.Module):
             # )
             # z = self.biggan_enc(gray, self.biggan_enc.shared(data["cid"]))
             z = self.biggan_enc(data['x_l'], self.biggan_enc.shared(data['cid']))
+            if 'shift' in data:
+                z = z + data['shift']
             ref, ref_feat_dict = self.biggan_gen(z, self.biggan_gen.shared(data['cid']))
         coor_out = self.net_corr(data['x_l'], data['x_rgb'], ref, self.biggan_dis, ref_feat_dict)
         out['fake_ab'] = self.net_gen(data['x_l'], coor_out['warp_feat'])

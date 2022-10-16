@@ -18,6 +18,12 @@ _C.DATA.USER_IMAGENET_LABEL = 'assets/predicted_label_for_user_image.txt'
 _C.MODEL = CfgNode()
 _C.MODEL.NAME = 'REFCOLOR'
 
+_C.DIVERSE = CfgNode()
+_C.DIVERSE.CKP = 'assets/deformator_for_biggan.pt'
+_C.DIVERSE.DIRECTION = -2
+_C.DIVERSE.SHIFT_RANGE = 16
+_C.DIVERSE.SHIFT_COUNT = 3
+
 _C.TEST = CfgNode()
 _C.TEST.LOAD_FROM = 'assets/colorization_model.pth'
 
