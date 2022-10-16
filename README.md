@@ -1,9 +1,6 @@
-# GCP-Colorization (ICCV 2021)
+#  Towards Vivid and Diverse Image Colorization with Generative Color Prior, ICCV 2021
 
----
-### Towards Vivid and Diverse Image Colorization with Generative Color Prior
-
-> [Paper](https://arxiv.org/abs/2108.08826)<br>
+> [![arXiv](https://img.shields.io/badge/arXiv-Paper-<COLOR>.svg)](https://arxiv.org/abs/2108.08826)<br>
 > [Yanze Wu](https://github.com/ToTheBeginning), [Xintao Wang](https://xinntao.github.io/), [Yu Li](https://yu-li.github.io/), [Honglun Zhang](https://scholar.google.com/citations?hl=en&user=KjQLROoAAAAJ), [Xun Zhao](https://scholar.google.com.hk/citations?user=KF-uZFYAAAAJ&hl=en), [Ying Shan](https://scholar.google.com/citations?user=4oXBp9UAAAAJ&hl=en)<br>
 > [ARC Lab, Tencent PCG](https://arc.tencent.com/en/index)
 
